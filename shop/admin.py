@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Product, ProductImage, Category
+from .models import Product, ProductImage, Category ,  Order, OrderItem
 
 
 class ProductImageInline(admin.TabularInline):
@@ -15,6 +15,15 @@ class ProductAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
     prepopulated_fields = {'slug': ('name',)} 
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("id", "customer_name", "customer_phone", "delivery_method", "status", "created_at")
+    search_fields = ("customer_name", "customer_phone")
+    list_filter = ("status", "delivery_method")
+
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ("order", "product", "quantity", "price")
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
