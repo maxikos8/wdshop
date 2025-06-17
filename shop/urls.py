@@ -13,6 +13,7 @@ urlpatterns = [
     path('checkout/', views.checkout_view, name='checkout'),
     path('add-to-cart/<int:pk>/', views.add_to_cart, name='add_to_cart'),
     path('api/add-to-cart/', views.api_add_to_cart, name='api_add_to_cart'),
+    path('engraving/', views.gravirovka_view, name='engraving'), 
 
 ]
 if settings.DEBUG:
