@@ -25,6 +25,9 @@ def category_products(request, slug):
         'products': products
     })
 
+def gravirovka_view(request):
+    return render(request, 'gravirovka.html')
+    
 def cart_view(request):
     cart = request.session.get('cart', {})
     cart_items = []
