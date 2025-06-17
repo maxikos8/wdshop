@@ -1,0 +1,23 @@
+
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-10">
+  <h1 class="text-3xl font-bold mb-8 text-center">{{ category.name }}</h1>
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+    {% for product in products %}
+      <a href="{% url 'product_detail' product.pk %}" class="border rounded-lg p-4 bg-white shadow hover:shadow-xl transition text-center block">
+        <img src="{% if product.images.first %}{{ product.images.first.image.url }}{% else %}{{ product.image.url }}{% endif %}"
+             alt="{{ product.title }}"
+             class="mx-auto mb-2 w-[225px] h-[300px] object-cover rounded-lg">
+        <p class="font-semibold mb-1">{{ product.title }}</p>
+        <p class="font-bold">{{ product.price }} ₽</p>
+      </a>
+    {% empty %}
+      <p class="col-span-3 text-center text-gray-500">Нет товаров в этой категории.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

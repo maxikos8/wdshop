@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Welcome Dream — Сувенирный магазин{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Welcome Dream — сувенирный магазин. Брелоки, браслеты, подвески, индивидуальная гравировка и подарочные наборы по отличным ценам.">
+  <meta name="keywords" content="сувениры, брелоки, браслеты, подарки, гравировка, Welcome Dream">
+  <meta property="og:title" content="Welcome Dream — Сувенирный магазин">
+  <meta property="og:description" content="Лучшие сувениры с индивидуальной гравировкой">
+  <meta property="og:image" content="{% static 'img/logo.svg' %}">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#1e3a8a">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    .burger span { display: block; width: 25px; height: 3px; margin: 5px 0; background: white; transition: .3s; }
+    .burger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg);}
+    .burger.open span:nth-child(2) { opacity: 0;}
+    .burger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg);}
+    #toTop {position: fixed; right: 20px; bottom: 30px; z-index: 50;}
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-white text-gray-900">
+
+  <!-- Шапка -->
+  <header class="bg-blue-900 text-white sticky top-0 z-40 shadow-lg">
+  <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+    <!-- Логотип — клик на главную -->
+    <a href="{% url 'index' %}" class="flex items-center">
+      <img src="{% static 'img/logo.svg' %}" alt="Welcome Dream Logo" class="h-12">
+    </a>
+    <!-- Навигация -->
+    <nav class="space-x-6 hidden md:flex items-center relative">
+      <!-- Категории — выпадающее меню -->
+      <div class="relative group">
+        <button class="hover:text-yellow-400 flex items-center focus:outline-none" type="button">
+          Категории
+          <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div class="absolute left-0 mt-2 w-44 bg-white text-gray-800 rounded shadow-lg border z-50
+                    opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-300">
+          {% for category in categories %}
+            <a href="{% url 'category_products' category.slug %}" class="block px-4 py-2 hover:bg-blue-100">{{ category.name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <a href="#engraving" class="hover:text-yellow-400">Гравировка</a>
+      <a href="#about" class="hover:text-yellow-400">О нас</a>
+      <a href="#contacts" class="hover:text-yellow-400">Контакты</a>
+    </nav>
+    <!-- Поиск, корзина и бургер-меню -->
+    <div class="flex items-center space-x-4">
+      <input type="text" placeholder="Поиск" class="p-2 rounded hidden md:block" />
+      <div class="relative">
+                <a href="{% url 'cart' %}" class="relative group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.2 6H17a1 1 0 001-1v-1M7 13l.4-2m5 5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                </svg>
+                {% if cart_count %}
+                    <span class="absolute -top-1 -right-2 bg-red-600 text-xs text-white rounded-full px-1.5 cart-count-badge">  {{ cart_count }}</span>
+                {% endif %}
+                </a>
+      </div>
+      <!-- Burger -->
+      <button id="burger" class="burger flex flex-col justify-center md:hidden ml-2">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <nav id="mobileMenu" class="md:hidden bg-blue-800 text-white text-lg px-6 py-4 space-y-2 absolute w-full left-0 top-20 hidden z-50">
+    <div>
+      <button id="mobileCatBtn" class="flex items-center w-full text-left hover:text-yellow-400" type="button">
+        Категории
+        <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div id="dropdownMobile" class="ml-4 mt-2 space-y-1 hidden">
+        {% for category in categories %}
+          <a href="{% url 'category_products' category.slug %}" class="block px-2 py-1 hover:bg-blue-700 rounded">{{ category.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+    <a href="#engraving" class="block hover:text-yellow-400">Гравировка</a>
+    <a href="#about" class="block hover:text-yellow-400">О нас</a>
+    <a href="#contacts" class="block hover:text-yellow-400">Контакты</a>
+  </nav>
+</header>
+
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Кнопка "вверх" -->
+  <button id="toTop" class="hidden fixed bg-yellow-400 text-white p-3 rounded-full shadow hover:bg-yellow-500 transition">
+    &#8679;
+  </button>
+
+  <!-- Подвал -->
+  <footer id="contacts" class="bg-blue-900 text-white text-sm py-6 mt-12">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col items-center space-y-2">
+      <p>&copy; 2025 Welcome Dream. Все права защищены.</p>
+      <p>Email: <span contenteditable="true">maxikos8@yandex.ru</span> | Телефон: <span contenteditable="true">+7 977 532 58 27</span></p>
+        <div class="flex space-x-4 mt-2">
+            <a href="https://t.me/melnikmak" target="_blank">
+                <img src="{% static 'img/telegram.svg' %}" alt="Telegram" class="h-6">
+            </a>
+            <a href="https://wa.me/79775325827" target="_blank">
+                <img src="{% static 'img/whatsapp.svg' %}" alt="WhatsApp" class="h-6">
+            </a>
+            <a href="https://vk.com/your_username" target="_blank">
+                <img src="{% static 'img/vk.svg' %}" alt="VK" class="h-6">
+            </a>
+        </div>
+    </div>
+  </footer>
+
+  <!-- JS для mobile dropdown, бургер-меню, кнопки вверх и формы -->
+  <script>
+    // Mobile dropdown
+    const mobileCatBtn = document.getElementById('mobileCatBtn');
+    const dropdownMobile = document.getElementById('dropdownMobile');
+    if (mobileCatBtn && dropdownMobile) {
+      mobileCatBtn.addEventListener('click', () => {
+        dropdownMobile.classList.toggle('hidden');
+      });
+    }
+    // Мобильное меню (бургер)
+    const burger = document.getElementById('burger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('open');
+      mobileMenu.classList.toggle('hidden');
+    });
+    // Кнопка "Вверх"
+    const toTopBtn = document.getElementById('toTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        toTopBtn.classList.remove('hidden');
+      } else {
+        toTopBtn.classList.add('hidden');
+      }
+    });
+    toTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Валидация формы и сообщение (на главной)
+    if (document.getElementById('customForm')) {
+      document.getElementById('customForm').onsubmit = function(e){
+        e.preventDefault();
+        document.getElementById('formSuccess').classList.remove('hidden');
+        this.reset();
+        setTimeout(()=>document.getElementById('formSuccess').classList.add('hidden'), 3500);
+      }
+    }
+  </script>
+
+  {% block extra_body %}{% endblock %}
+</body>
+</html>

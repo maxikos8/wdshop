@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Корзина — Welcome Dream{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-10">
+  <h1 class="text-3xl font-bold mb-8">Ваша корзина</h1>
+  {% if cart_items %}
+    <form method="post" action="{% url 'cart_update' %}">
+      {% csrf_token %}
+      <table class="w-full text-left mb-6">
+        <thead>
+          <tr>
+            <th class="pb-2">Товар</th>
+            <th class="pb-2">Цена</th>
+            <th class="pb-2">Количество</th>
+            <th class="pb-2">Сумма</th>
+            <th class="pb-2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart_items %}
+          <tr>
+            <td class="py-2">
+              <a href="{% url 'product_detail' item.product.pk %}" class="font-semibold hover:underline">
+                {{ item.product.title }}
+              </a>
+              {% if item.product.images.first %}
+                <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.title }}" class="h-16 w-16 object-cover rounded ml-2 inline-block">
+              {% endif %}
+            </td>
+            <td>{{ item.product.price }} ₽</td>
+            <td>
+              <input type="number" min="1" name="quantity_{{ item.product.pk }}" value="{{ item.quantity }}" class="w-16 border rounded px-1 py-0.5">
+            </td>
+            <td>{{ item.total }} ₽</td>
+            <td>
+              <button type="submit" name="remove" value="{{ item.product.pk }}" class="text-red-600 hover:underline">Удалить</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="text-xl font-bold mb-6">Итого: {{ cart_total }} ₽</div>
+      <button type="submit" class="bg-blue-900 text-white px-5 py-2 rounded hover:bg-blue-700 font-semibold shadow">Обновить корзину</button>
+      <a href="{% url 'checkout' %}" class="ml-3 bg-yellow-400 text-white px-5 py-2 rounded hover:bg-yellow-500 font-semibold shadow">Оформить заказ</a>
+    </form>
+  {% else %}
+    <p class="text-gray-600 mb-8">Корзина пуста.</p>
+    <a href="{% url 'index' %}" class="text-blue-700 hover:underline">Вернуться в каталог</a>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome Dream — Сувенирный магазин{% endblock %}
+
+{% block content %}
+  <!-- Бестселлеры (горизонтальная прокручивающаяся лента) -->
+  <section class="max-w-7xl mx-auto px-4 py-10">
+    <h2 class="text-3xl font-semibold mb-6">Бестселлеры</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {% for product in bestsellers %}
+        <a href="{% url 'product_detail' product.pk %}" class="border rounded p-4 text-center block hover:shadow-lg transition">
+          <img
+            src="{% if product.images.first %}{{ product.images.first.image.url }}{% endif %}"
+            alt="{{ product.title }}"
+            class="mx-auto mb-2 w-[225px] h-[300px] object-cover rounded-lg"
+          >
+          <p>{{ product.title }}</p>
+          <p class="font-bold">{{ product.price }} ₽</p>
+        </a>
+      {% empty %}
+        <p class="col-span-4 text-center text-gray-500">Нет бестселлеров</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Категории -->
+  <section class="max-w-7xl mx-auto px-4 py-10">
+    <h2 class="text-3xl font-semibold mb-6">Категории</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
+      {% for category in categories %}
+        <a href="{% url 'category_products' category.slug %}" class="block hover:shadow-xl rounded transition p-2">
+          <img src="{{ category.image.url }}" class="h-[400px] w-[400px] object-cover mx-auto mb-2 rounded bg-gray-100 shadow" alt="{{ category.name }}">
+          <p class="font-semibold">{{ category.name }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Заказ индивидуальной гравировки -->
+  <section id="engraving" class="max-w-2xl mx-auto px-4 py-10">
+    <h2 class="text-2xl font-semibold mb-4">Заказ индивидуальной гравировки</h2>
+    <form id="customForm" class="space-y-4 bg-gray-50 p-6 rounded shadow">
+      <label>
+        <span class="text-sm text-gray-700">Ваше имя</span>
+        <input type="text" name="name" placeholder="Ваше имя" class="w-full p-2 border rounded mt-1" required>
+      </label>
+      <label>
+        <span class="text-sm text-gray-700">Контактный телефон или емейл</span>
+        <input type="email" name="email" placeholder="Контактный телефон или емейл" class="w-full p-2 border rounded mt-1" required>
+      </label>
+      <label>
+        <span class="text-sm text-gray-700">Краткое описание заказа</span>
+        <textarea name="engraving" placeholder="Ваш текст" class="w-full p-2 border rounded mt-1"></textarea>
+      </label>
+      <button type="submit" class="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500 transition">Отправить</button>
+      <p id="formSuccess" class="hidden text-green-600 mt-2">Спасибо за заказ!</p>
+    </form>
+  </section>
+
+  <!-- О нас -->
+  <section id="about" class="max-w-3xl mx-auto px-4 py-10 text-center">
+    <h2 class="text-2xl font-semibold mb-4">О нас</h2>
+    <p class="text-gray-700">Welcome Dream — это семейный магазин оригинальных сувениров. Мы верим, что особенные подарки создают атмосферу праздника каждый день! У нас вы найдете уникальные вещицы для себя и близких с возможностью индивидуальной гравировки.</p>
+  </section>
+{% endblock %}
